@@ -2,86 +2,37 @@
 
 namespace Webkul\GraphQLAPI\Type;
 
-use Carbon\Carbon;
-use Illuminate\Support\Arr;
 use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\BookingProduct\Helpers\Booking as BookingHelper;
 use Webkul\BookingProduct\Repositories\BookingProductRepository;
-use Webkul\Checkout\Models\CartItem;
-use Webkul\Product\Datatypes\CartItemValidationResult;
-use Webkul\Product\Helpers\ProductImage;
 use Webkul\Product\Repositories\ProductAttributeValueRepository;
 use Webkul\Product\Repositories\ProductImageRepository;
 use Webkul\Product\Repositories\ProductInventoryRepository;
 use Webkul\Product\Repositories\ProductRepository;
-use Webkul\Product\Type\Virtual;
+use Webkul\Product\Repositories\ProductVideoRepository;
 
-class Booking extends Virtual
+class Booking extends \Webkul\BookingProduct\Type\Booking
 {
-    /**
-     * BookingProductRepository instance
-     *
-     * @var \Webkul\BookingProduct\Repositories\BookingProductRepository
-     */
-    protected $bookingProductRepository;
-
-    /**
-     * Booking helper instance
-     *
-     * @var \Webkul\BookingProduct\Helpers\Booking
-     */
-    protected $bookingHelper;
-
-    /** @var bool do not allow booking products to be copied, it would be too complicated. */
-    protected $canBeCopied = false;
-
-    /**
-     * @var array
-     */
-    protected $additionalViews = [
-        'admin::catalog.products.accordians.images',
-        'admin::catalog.products.accordians.categories',
-        'admin::catalog.products.accordians.channels',
-        'bookingproduct::admin.catalog.products.accordians.booking',
-        'admin::catalog.products.accordians.product-links',
-    ];
-
-    /**
-     * Create a new product type instance.
-     *
-     * @param  \Webkul\Attribute\Repositories\AttributeRepository           $attributeRepository
-     * @param  \Webkul\Product\Repositories\ProductRepository               $productRepository
-     * @param  \Webkul\Product\Repositories\ProductAttributeValueRepository $attributeValueRepository
-     * @param  \Webkul\Product\Repositories\ProductInventoryRepository      $productInventoryRepository
-     * @param  \Webkul\Product\Repositories\ProductImageRepository          $productImageRepository
-     * @param  \Webkul\Product\Helpers\ProductImage $productImageHelper
-     * @param  \Webkul\BookingProduct\Repositories\BookingProductRepository  $bookingProductRepository
-     * @param  \Webkul\BookingProduct\Helpers\BookingHelper  $bookingHelper
-     * @return void
-     */
     public function __construct(
         AttributeRepository $attributeRepository,
         ProductRepository $productRepository,
         ProductAttributeValueRepository $attributeValueRepository,
         ProductInventoryRepository $productInventoryRepository,
         ProductImageRepository $productImageRepository,
-        ProductImage $productImageHelper,
         BookingProductRepository $bookingProductRepository,
-        BookingHelper $bookingHelper
-    )
-    {
+        BookingHelper $bookingHelper,
+        ProductVideoRepository $productVideoRepository
+    ){
         parent::__construct(
             $attributeRepository,
             $productRepository,
             $attributeValueRepository,
             $productInventoryRepository,
             $productImageRepository,
-            $productImageHelper
+            $bookingProductRepository,
+            $bookingHelper,
+            $productVideoRepository
         );
-
-        $this->bookingProductRepository = $bookingProductRepository;
-
-        $this->bookingHelper = $bookingHelper;
     }
 
     /**
