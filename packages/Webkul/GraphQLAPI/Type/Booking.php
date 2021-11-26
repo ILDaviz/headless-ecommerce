@@ -46,15 +46,15 @@ class Booking extends \Webkul\BookingProduct\Type\Booking
         $product = parent::update($data, $id, $attribute);
 
         if (request()->route()->getName() != 'admin.catalog.products.massupdate') {
-            $bookingProduct = $this->bookingProductRepository->findOneByField('product_id', $id);
 
-            if ($bookingProduct) {
+            if ($bookingProduct = $this->getBookingProduct($id)) {
                 $this->bookingProductRepository->update($data['booking'], $bookingProduct->id);
-            } else {
-                $this->bookingProductRepository->create(array_merge($data['booking'], [
-                    'product_id' => $id,
-                ]));
+                return $product;
             }
+
+            $this->bookingProductRepository->create(array_merge($data['booking'], [
+                'product_id' => $id,
+            ]));
         }
 
         return $product;
